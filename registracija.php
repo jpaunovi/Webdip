@@ -1,6 +1,7 @@
 ﻿<?php
 include_once 'dohvatiPomak.php';
 include_once 'RadSbazom.php';
+include_once 'dnevnik.php';
 $greskaPrezime=$greskaSifra=$greskaAdresa=$greskaEmail=$greskaKorisnickoime=$greskaIme=$greskaAktivacija="";
 $ime=$korisnickoIme=$prezime=$adresa=$email=$sifra="";
 if (isset($_POST['submit'])) {
@@ -67,17 +68,18 @@ if (isset($_POST['submit'])) {
 			$insert = new RadSbazom();
 			$date = dohvatiPomak();
 			$data = array('ime' => $ime, 'prezime' => $prezime, 'email' => $email, 'sifra' => $sifra,
-				'korisnicko_ime' => $korisnickoIme, 'adresa' => $adresa, 'aktivaciski_kod' => $aktivaciskikod,
+				'korisnicko_ime' => $korisnickoIme, 'adresa' => $adresa, 'aktivaciski_kod' => $aktivaciskikod,'status'=>'2','neuspjesnost_prijave'=>'0',
 				'vrijeme_registracije' => $date, 'uloga' => '1');
 			$insert->InsertFunkcija("korisnici", $data);
 			if(!$insert){
 				die("Problem s Insertom");
 			}
 			else{
-				$poruka="<p>Prima: ". $korisnickoIme . "</p>";
-				$poruka .="<p>Kliknite na link za aktivaciju korisnika</p>";
+				$poruka= $korisnickoIme;
+				$poruka .="Kliknite na link za aktivaciju korisnika";
 				$poruka .= "<a href=http://barka.foi.hr/WebDiP/2015_projekti/WebDiP2015x062/aktivacija.php?email=" . urlencode($email) . "&vrijeme=".  urlencode($date) . "&aktkod=" . urlencode($aktivaciskikod);
 				mail($email,'Registration Confirmation',$poruka);
+				upisiDevnik($korisnickoIme,'Uspjesna registracija');
 			}
 		}
 	}
@@ -93,23 +95,19 @@ if (isset($_POST['submit'])) {
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="autor" content="Jakša Paunović">
      <meta name="application-name" content="Kino projekt">
-     <meta name="description" content="7.6.2016">
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+     <meta name="description" content="12.9.2016">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-		<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-		<script type ="text/javascript" src="http://barka.foi.hr/WebDiP/2015_projekti/WebDiP2015x062/js/KorisnickoImeProvjera.js"></script>
+		<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+		<script type ="text/javascript" src="//barka.foi.hr/WebDiP/2015_projekti/WebDiP2015x062/js/KorisnickoImeProvjera.js"></script>
+		<script type ="text/javascript" src="//barka.foi.hr/WebDiP/2015_projekti/WebDiP2015x062/js/RegistracijaProvjera.js"></script>
 
 	</head>
 	<body onload="ProvjeraForme();">
 	 <header></header>
-	 <nav id="nav">
-	  <ul style="list-style-type:none">
-	   <li>Prijava</li>
-	   <li>Registracija</li>
-	  </ul>
-	 </nav>
+	 <?php include_once 'heder.php'; ?>
 	 <article id="error"></article>
-	 <form id="RegistracijaForma"  name="RegistracijaForma"  method="POST" >
+	 <form id="RegistracijaForma"  name="RegistracijaForma"  method="POST"  >
 	 <table>
 	 <tr>
 	 <td><label for="ime">Unesite ime </label></td>
@@ -141,10 +139,12 @@ if (isset($_POST['submit'])) {
 	 <td> <input class="input" id="adresa" type="text" placeholder="Unesite svoju addresu" name="adresa" /></td>
 	 <td id="greskaAdresa" class="greske"><?php echo  $greskaAdresa?></td>
 	 </tr>
- 
+ 		<tr><script src='https://www.google.com/recaptcha/api.js'></script></tr>
 	 </table>
+		 <div class="g-recaptcha" data-sitekey="6LeUYQYTAAAAAFWwhUQV1-kzTPD0L2kF_Y-AwUBQ"></div>
 	 <input type="submit" class="submit" id="submit" value="Registriraj se"   name="submit"/>
  	 <input type="reset" class="reset" id="reset" value="Izbrisi podatke"/>
 	 </form>
 	</body>
+<?php include_once 'footer.php'?>
 </html>

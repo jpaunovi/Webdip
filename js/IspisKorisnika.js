@@ -1,4 +1,3 @@
-
 $(document).ready(function($) {
    $.ajax ({
        url:"http://barka.foi.hr/WebDiP/2015_projekti/WebDiP2015x062/private/IspisKorisnika.php",
@@ -14,7 +13,7 @@ $(document).ready(function($) {
                "<tbody>";
 
            for(var i=0;i<json.length;i++){
-               tablica += "<tr>"
+               tablica += "<tr>";
                tablica += "<td>" + json[i].idkorisnici + "</td>" ;
                tablica += "<td>" + json[i].ime + "</td>" ;
                tablica += "<td>" + json[i].prezime + "</td>" ;
@@ -36,9 +35,9 @@ $(document).ready(function($) {
 
            $('#IspisKoeisnikaPrivatno').dataTable
            ( {
-               "bPaginate":true,
-               "bFilter":true,
-               "ordering": false
+               bPaginate:true,
+               bFilter:true
+               
            } );
        }
 
